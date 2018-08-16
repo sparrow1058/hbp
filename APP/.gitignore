@@ -1,0 +1,9 @@
+out/
+*.d
+*.o
+*.map
+*.axf
+*.hex
+*.htm
+*.lst
+Objects/
