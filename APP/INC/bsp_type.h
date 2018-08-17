@@ -9,6 +9,9 @@ typedef void    (*pvFunBool) (bool     bVal);
 //For HBP I2C Device
 typedef uint16_t	(*pvFun_Bytes)	(void);
 
+typedef void (*pvFunSet)(uint8_t id,bool val);
+typedef bool (*pbFunGet)(uint8_t id);
+
 typedef struct CMD_HANDLE_STRUCT
 {
 	const char * cmd;
@@ -28,7 +31,15 @@ typedef struct HBP_HANDLE_STRUCT
 	const pvFun_Bytes getBP;	//get blood pressure
 	
 }HBP_HANDLE;
-
+typedef struct IO_HANDLE_STRUCT
+{
+	const char * const name;
+	uint8_t 	nums;
+	
+	const pvFunVoid init;		//IO config
+	const pvFunSet ioset;		//set io
+	const pbFunGet ioget;		//get io
+}IO_HANDLE;
 
 
 

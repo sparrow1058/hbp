@@ -27,6 +27,7 @@ int main(void)
 				aRxBuffer[RxCounter]='\0';
 				if(RxCounter>4)
 				{
+					printf("%s",aRxBuffer);
 					shellCmdService(aRxBuffer);
 					
 				}

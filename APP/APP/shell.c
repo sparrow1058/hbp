@@ -5,7 +5,7 @@
 #include "user_val.h"
 #include "string.h"
 
-//THE AT CMDS
+//THE AT CMD ID 
 #define AT_HVER		0
 #define AT_SVER		1	
 #define AT_HYVER	2
@@ -16,8 +16,12 @@
 #define AT_ECGON	7
 #define AT_ECGOFF	8
 #define AT_UPF		9
+#define AT_PKEY		10
+#define AT_SKEY		11
 
-#define MAX_CMDS	10
+
+//----------------
+#define MAX_CMDS	20
 #define AT_REPLAY	printf
 
 extern HBP_HANDLE * hbp;
@@ -32,6 +36,8 @@ char * cmdStrList[MAX_CMDS]={
 	"AT+ECGON",
 	"AT+ECGOFF",
 	"AT+UPF",
+	"AT+PKEY",
+	"AT+SKEY",
 };
 bool StrComp(void * buffer,void * StrCmd)
 {
@@ -70,6 +76,12 @@ uint8_t getCmdType(uint8_t * buff)
 			ret= i;
 			break;
 		}
+		if(strcmp((const char *)pbuf,cmdStrList[i])<0)
+		{
+			ret= i;
+			break;
+		}
+		
 	}
 	return ret;
 }
@@ -114,6 +126,10 @@ void shellCmdService(volatile uint8_t  * pcBuff)
 		case AT_ECGOFF:
 			break;
 		case AT_UPF:
+			break;
+		case AT_PKEY:
+			break;
+		case AT_SKEY:
 			break;
 		default:
 			break;

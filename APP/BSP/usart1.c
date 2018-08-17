@@ -43,9 +43,14 @@ void USART_Config(void)
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 	  
 	/* USART1 mode config */
-	USART_InitStructure.USART_BaudRate = 115200;
+	USART_InitStructure.USART_BaudRate = 115200/2;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+#ifdef USE_GD_MCU
+	USART_InitStructure.USART_StopBits =USART_StopBits_1;// USART_StopBits_0_5;
+#else
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+#endif
+
 	USART_InitStructure.USART_Parity = USART_Parity_No ;
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;

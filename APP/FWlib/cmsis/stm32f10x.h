@@ -125,8 +125,11 @@
  * @brief In the following line adjust the External High Speed oscillator (HSE) Startup 
    Timeout value 
    */
-#define HSE_STARTUP_TIMEOUT   ((uint16_t)0x0500) /*!< Time out for HSE start up */
-
+#ifdef USE_GD_MCU	 
+	#define HSE_STARTUP_TIMEOUT   ((uint16_t)0xFFFF) /*!< Time out for HSE start up */	//leaf 2018-0817
+#else
+	#define HSE_STARTUP_TIMEOUT   ((uint16_t)0x0500) /*!< Time out for HSE start up */
+#endif
 #define HSI_VALUE    ((uint32_t)8000000) /*!< Value of the Internal oscillator in Hz*/
 
 /**
