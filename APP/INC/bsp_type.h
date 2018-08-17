@@ -2,12 +2,18 @@
 #define __BSP_TYPE_H
 #include "stm32f10x.h"
 #include "stdint.h"
+#include "stdbool.h"
 
 typedef void    (*pvFunVoid) (void);
 typedef void    (*pvFunBool) (bool     bVal);
 //For HBP I2C Device
 typedef uint16_t	(*pvFun_Bytes)	(void);
 
+typedef struct CMD_HANDLE_STRUCT
+{
+	const char * cmd;
+	const void * callFun;
+}CMD_HANDLE;
 typedef struct HBP_HANDLE_STRUCT
 {
 		const char * const name;

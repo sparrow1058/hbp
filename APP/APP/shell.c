@@ -4,6 +4,7 @@
 #include "bsp_type.h"
 #include "user_val.h"
 #include "string.h"
+
 //THE AT CMDS
 #define AT_HVER		0
 #define AT_SVER		1	
@@ -17,8 +18,9 @@
 #define AT_UPF		9
 
 #define MAX_CMDS	10
+#define AT_REPLAY	printf
 
-
+extern HBP_HANDLE * hbp;
 char * cmdStrList[MAX_CMDS]={
 	"AT+HVER",
 	"AT+SVER",
@@ -44,17 +46,17 @@ bool StrComp(void * buffer,void * StrCmd)
         if(ptCmd[i])
         {
             if(ptBuf[i] != ptCmd[i])
-							return FALSE;
+							return false;
         }
         else 
         {
             if(i)
-							return TRUE;
+							return true;
             else 
-							return FALSE;    
+							return false;    
         }
     }
-    return FALSE;
+    return false;
 }
 uint8_t getCmdType(uint8_t * buff)
 {
@@ -75,12 +77,46 @@ void shellCmdService(volatile uint8_t  * pcBuff)
 {
 	uint8_t *ptRxd;
 //	int 	i;
+	uint16_t tmpval;
 	uint8_t cmdType;
 	//uint16_t retVal;
 //	uint8_t buff[32];
 	ptRxd=(uint8_t *)pcBuff;
 	cmdType=getCmdType(ptRxd);
 	printf("AT CMD =%d \n",cmdType);
-	//switch(cmdType)
+	switch(cmdType)
+	{
+		case AT_HVER:
+			AT_REPLAY("%s",hbp->hVersion);
+			break;
+		case AT_SVER:
+			AT_REPLAY("%s",hbp->sVersion);
+			break;
+		case AT_HYVER:
+			AT_REPLAY("%s",hbp->hyVersion);
+			break;
+		case AT_HP_ON:
+			hbp->hpCtrl(1);
+			break;
+		case AT_HP_OFF:
+			hbp->hpCtrl(0);
+			break;
+		case AT_HR:
+			tmpval=hbp->getHR();
+			AT_REPLAY("%d",tmpval);
+			break;
+		case AT_BP:
+			tmpval=hbp->getBP();
+			AT_REPLAY("%d",tmpval);
+			break;
+		case AT_ECGON:
+			break;
+		case AT_ECGOFF:
+			break;
+		case AT_UPF:
+			break;
+		default:
+			break;
+	}
 }
 

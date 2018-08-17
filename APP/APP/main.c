@@ -3,22 +3,22 @@
 #include "stdio.h"
 #include "user_val.h"
 #include "bsp_type.h"
-/*
- * 函数名：main
- * 描述  ：主函数
- * 输入  : 无
- * 输出  ：无
- */
+
+
+extern HBP_HANDLE * hbp;
 volatile uint8_t aRxBuffer[100]={0};
 volatile uint8_t RxCounter=0;
 volatile uint8_t RxFrameState=0;
+
 int main(void)
 {  
 	/* 配置系统时钟为 72M */      
   SystemInit();
   /* USART1 config 115200 8-N-1 */
 	USART_Config();
+
 	printf("xshell Init \r\n");
+		hbp->init();			// init i2c1 heart blood  device
     while(1)
     {
 			if(RxFrameState==1)
