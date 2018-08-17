@@ -393,12 +393,17 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>USER</GroupName>
+          <GroupName>APP</GroupName>
           <Files>
             <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\main.c</FilePath>
+              <FilePath>..\APP\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>shell.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\APP\shell.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -435,6 +440,11 @@
               <FileType>1</FileType>
               <FilePath>..\FWlib\src\stm32f10x_i2c.c</FilePath>
             </File>
+            <File>
+              <FileName>misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\src\misc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -469,6 +479,11 @@
               <FileName>usart1.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\usart1.h</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_type.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\INC\bsp_type.h</FilePath>
             </File>
           </Files>
         </Group>

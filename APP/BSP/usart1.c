@@ -1,33 +1,33 @@
-/******************** (C) COPYRIGHT 2011 野火嵌入式开发工作室 ********************
- * 文件名  ：usart1.c
- * 描述    ：将printf函数重定向到USART1。这样就可以用printf函数将单片机的数据
- *           打印到PC上的超级终端或串口调试助手。         
- * 实验平台：野火STM32开发板
- * 硬件连接：------------------------
+/******************** (C) COPYRIGHT 2011 ?????????? ********************
+ * ???  :usart1.c
+ * ??    :?printf??????USART1???????printf?????????
+ *           ???PC??????????????         
+ * ????:??STM32???
+ * ????:------------------------
  *          | PA9  - USART1(Tx)      |
  *          | PA10 - USART1(Rx)      |
  *           ------------------------
- * 库版本  ：ST3.0.0
+ * ???  :ST3.0.0
  *
- * 作者    ：fire  QQ: 313303034 
- * 博客    ：firestm32.blog.chinaunix.net
+ * ??    :fire  QQ: 313303034 
+ * ??    :firestm32.blog.chinaunix.net
 **********************************************************************************/
 
 #include "usart1.h"
 #include <stdarg.h>
-
+#include "misc.h"
 /*
- * 函数名：USART1_Config
- * 描述  ：USART1 GPIO 配置,工作模式配置
- * 输入  ：无
- * 输出  : 无
- * 调用  ：外部调用
+ * ???:USART1_Config
+ * ??  :USART1 GPIO ??,???????115200 8-N-1
+ * ??  :?
+ * ??  : ?
+ * ??  :????
  */
-void USART1_Config(void)
+void USART_Config(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
-
+	 NVIC_InitTypeDef NVIC_InitStructure;
 	/* config USART1 clock */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA, ENABLE);
 
@@ -49,20 +49,72 @@ void USART1_Config(void)
 	USART_InitStructure.USART_Parity = USART_Parity_No ;
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-	USART_Init(USART1, &USART_InitStructure); 
+	USART_Init(USART1, &USART_InitStructure);  
+		USART_ITConfig(USART1, USART_IT_RXNE, ENABLE); 
+		USART_ITConfig(USART1, USART_IT_IDLE, ENABLE);
+		
   USART_Cmd(USART1, ENABLE);
+
+    
+
+
+//
+//  GPIO_InitTypeDef GPIO_InitStructure;
+//	USART_InitTypeDef USART_InitStructure;
+
+	/* config USART2 clock */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+
+	/* USART2 GPIO config */
+   /* Configure USART2 Tx (PA.02) as alternate function push-pull */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);//* Configure USART2 Rx (PA.03) as input floating */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+	  
+	/* USART2 mode config */
+	USART_InitStructure.USART_BaudRate = 115200;
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+	USART_InitStructure.USART_StopBits = USART_StopBits_1;
+	USART_InitStructure.USART_Parity = USART_Parity_No ;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+
+
+	USART_Init(USART2, &USART_InitStructure);
+	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE); 
+  USART_Cmd(USART2, ENABLE);
+
+
+    /* Configure the NVIC Preemption Priority Bits */  
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);    
+  /* Enable the USARTy Interrupt */
+  NVIC_InitStructure.NVIC_IRQChannel =USART1_IRQn ;//	
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+  NVIC_InitStructure.NVIC_IRQChannel =USART2_IRQn ;//	
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
 }
 
 /*
- * 函数名：fputc
- * 描述  ：重定向c库函数printf到USART1
- * 输入  ：无
- * 输出  ：无
- * 调用  ：由printf调用
+ * ???:fputc
+ * ??  :???c???printf?USART1
+ * ??  :?
+ * ??  :?
+ * ??  :?printf??
  */
 int fputc(int ch, FILE *f)
 {
-/* 将Printf内容发往串口 */
+/* ?Printf?????? */
   USART_SendData(USART1, (unsigned char) ch);
   while (!(USART1->SR & USART_FLAG_TXE));
  
@@ -70,15 +122,15 @@ int fputc(int ch, FILE *f)
 }
 
 /*
- * 函数名：itoa
- * 描述  ：将整形数据转换成字符串
- * 输入  ：-radix =10 表示10进制，其他结果为0
- *         -value 要转换的整形数
- *         -buf 转换后的字符串
+ * ???:itoa
+ * ??  :???????????
+ * ??  :-radix =10 ??10??,?????0
+ *         -value ???????
+ *         -buf ???????
  *         -radix = 10
- * 输出  ：无
- * 返回  ：无
- * 调用  ：被USART1_printf()调用
+ * ??  :?
+ * ??  :?
+ * ??  :?USART1_printf()??
  */
 static char *itoa(int value, char *string, int radix)
 {
@@ -129,19 +181,19 @@ static char *itoa(int value, char *string, int radix)
 } /* NCL_Itoa */
 
 /*
- * 函数名：USART1_printf
- * 描述  ：格式化输出，类似于C库中的printf，但这里没有用到C库
- * 输入  ：-USARTx 串口通道，这里只用到了串口1，即USART1
- *		     -Data   要发送到串口的内容的指针
- *			   -...    其他参数
- * 输出  ：无
- * 返回  ：无 
- * 调用  ：外部调用
- *         典型应用USART1_printf( USART1, "\r\n this is a demo \r\n" );
+ * ???:USART1_printf
+ * ??  :?????,???C???printf,???????C?
+ * ??  :-USARTx ????,????????1,?USART1
+ *		     -Data   ????????????
+ *			   -...    ????
+ * ??  :?
+ * ??  :? 
+ * ??  :????
+ *         ????USART1_printf( USART1, "\r\n this is a demo \r\n" );
  *            		 USART1_printf( USART1, "\r\n %d \r\n", i );
  *            		 USART1_printf( USART1, "\r\n %s \r\n", j );
  */
-void USART1_printf(USART_TypeDef* USARTx, uint8_t *Data,...)
+void USART_printf(USART_TypeDef* USARTx, uint8_t *Data,...)
 {
 	const char *s;
   int d;   
@@ -150,18 +202,18 @@ void USART1_printf(USART_TypeDef* USARTx, uint8_t *Data,...)
   va_list ap;
   va_start(ap, Data);
 
-	while ( *Data != 0)     // 判断是否到达字符串结束符
+	while ( *Data != 0)     // ????????????
 	{				                          
 		if ( *Data == 0x5c )  //'\'
 		{									  
 			switch ( *++Data )
 			{
-				case 'r':							          //回车符
+				case 'r':							          //???
 					USART_SendData(USARTx, 0x0d);
 					Data ++;
 					break;
 
-				case 'n':							          //换行符
+				case 'n':							          //???
 					USART_SendData(USARTx, 0x0a);	
 					Data ++;
 					break;
@@ -175,7 +227,7 @@ void USART1_printf(USART_TypeDef* USARTx, uint8_t *Data,...)
 		{									  //
 			switch ( *++Data )
 			{				
-				case 's':										  //字符串
+				case 's':										  //???
 					s = va_arg(ap, const char *);
           for ( ; *s; s++) 
 					{
@@ -185,7 +237,7 @@ void USART1_printf(USART_TypeDef* USARTx, uint8_t *Data,...)
 					Data++;
           break;
 
-        case 'd':										//十进制
+        case 'd':										//???
           d = va_arg(ap, int);
           itoa(d, buf, 10);
           for (s = buf; *s; s++) 
@@ -204,5 +256,33 @@ void USART1_printf(USART_TypeDef* USARTx, uint8_t *Data,...)
 		while( USART_GetFlagStatus(USARTx, USART_FLAG_TC) == RESET );
 	}
 }
-/******************* (C) COPYRIGHT 2011 野火嵌入式开发工作室 *****END OF FILE****/
+extern volatile uint8_t aRxBuffer[100];
+extern volatile uint8_t RxCounter;
+extern volatile uint8_t RxFrameState;
+void USART1_IRQHandler(void)
+{
+	u8 c;
+	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
+	{ 	
+	    c=USART1->DR;
+		aRxBuffer[RxCounter++]=c;
+	} 
+	if(USART_GetITStatus(USART1,USART_IT_IDLE)!=RESET)
+	{
+		USART1->SR;
+		USART1->DR;
+		RxFrameState=1;
+	} 
+}
+void USART2_IRQHandler(void)
+{
+	u8 c;
+	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
+	{ 	
+	    c=USART2->DR;
+	 	USART_SendData(USART2, c);  
+	} 
+	 
+}
+/******************* (C) COPYRIGHT 2011 ?????????? *****END OF FILE****/ 
 
