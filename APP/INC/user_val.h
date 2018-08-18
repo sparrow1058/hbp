@@ -5,6 +5,8 @@
 uint8_t getCmdType(uint8_t * buff);
 void shellCmdService(volatile uint8_t  * pcBuff);
 extern  HBP_HANDLE  hbp_handle;
+extern HBP_HANDLE * hbp;
+extern IO_HANDLE *ioh;
 
 
 #endif

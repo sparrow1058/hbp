@@ -4,7 +4,6 @@ out/
 *.o
 *.map
 *.axf
-*.hex
 *.htm
 *.lst
 Objects/

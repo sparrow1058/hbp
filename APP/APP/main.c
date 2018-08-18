@@ -5,7 +5,6 @@
 #include "bsp_type.h"
 
 
-extern HBP_HANDLE * hbp;
 volatile uint8_t aRxBuffer[100]={0};
 volatile uint8_t RxCounter=0;
 volatile uint8_t RxFrameState=0;
@@ -18,7 +17,9 @@ int main(void)
 	USART_Config();
 
 	printf("xshell Init \r\n");
-		hbp->init();			// init i2c1 heart blood  device
+	ioh->init();		
+	hbp->init();			// init i2c1 heart blood  device
+	
     while(1)
     {
 			if(RxFrameState==1)

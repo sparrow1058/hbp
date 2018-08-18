@@ -76,12 +76,6 @@ uint8_t getCmdType(uint8_t * buff)
 			ret= i;
 			break;
 		}
-		if(strcmp((const char *)pbuf,cmdStrList[i])<0)
-		{
-			ret= i;
-			break;
-		}
-		
 	}
 	return ret;
 }
