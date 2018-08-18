@@ -5,7 +5,7 @@
 
 #define I2C_ID				I2C1
 #define I2C_Speed			40000
-#define HBP_ADDRESS			0xA0		//7bit address 0x60
+#define HBP_ADDRESS			0xC0		//7bit address 0x60
 #define REG_HBP_VER			0x00		//Read:  Return 8 bytes string
 #define REG_HBP_CTRL		0x00		//Write: 0xA1  ON  ,, 0XA0  OFF
 #define REG_HBP_STATUS		0x01		//Read:  bit0==1 Heart rate is update  bit1==1 ,blood pressure is update 
