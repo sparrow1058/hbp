@@ -1,18 +1,27 @@
 #include "stm32f10x.h"
+#include "bsp_type.h"
+#include "user_val.h"
+
 #define ADC1_DR_Address    ((u32)0x4001244C)
-
-__IO u16 ADC_ConvertedValue;
-
+#define IO_LPSEL		//	
+__IO u16 ADC1_ConvertedValue;
+__IO u16 ADC2_ConvertedValue;
 static void ADC1_GPIO_Config(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1|RCC_APB2Periph_GPIOA,ENABLE);
-	
-	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_1|GPIO_Pin_2;
-	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_AIN;
-	GPIO_Init(GPIOA,&GPIO_InitStructure);
+
+	/* Enable DMA clock */
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+
+	/* Enable ADC1 and GPIOC clock */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA, ENABLE);
+
+  /* Configure PC.01  as analog input */
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);				// PC1,?????????
 }
+
 static void ADC1_Mode_Config(void)
 {
 	DMA_InitTypeDef DMA_InitStructure;
@@ -20,8 +29,8 @@ static void ADC1_Mode_Config(void)
 
 	/* DMA channel1 configuration */
   DMA_DeInit(DMA1_Channel1);
-  DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;			//ADC1  Addresss 
-  DMA_InitStructure.DMA_MemoryBaseAddr = (u32)&ADC_ConvertedValue;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
+  DMA_InitStructure.DMA_MemoryBaseAddr = (u32)&ADC1_ConvertedValue;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
   DMA_InitStructure.DMA_BufferSize = 1;
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -46,7 +55,7 @@ static void ADC1_Mode_Config(void)
   ADC_Init(ADC1, &ADC_InitStructure);
 
   /* ADC1 regular channel11 configuration */ 
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_55Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_55Cycles5);
 
   /* Enable ADC1 DMA */
   ADC_DMACmd(ADC1, ENABLE);
@@ -67,8 +76,30 @@ static void ADC1_Mode_Config(void)
   /* Start ADC1 Software Conversion */ 
   ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
+
 void ADC1_Init(void)
 {
 	ADC1_GPIO_Config();
 	ADC1_Mode_Config();
 }
+
+void ECG_ONOFF(bool cmd)
+{
+	printf("ecg cmd \n");
+	if(cmd)
+	{
+		adch->status=true;
+	}else
+	{
+		adch->status=false;		
+	}
+}
+ADC_HANDLE adc_handle={
+	.name	= "adc",
+	.status	=false,
+	.val1		=&ADC1_ConvertedValue,
+	.val2		=&ADC2_ConvertedValue,
+	.init		=ADC1_Init,
+	.ECGCtrl	=ECG_ONOFF,
+};
+ADC_HANDLE *adch	=&adc_handle;

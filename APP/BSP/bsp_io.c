@@ -1,6 +1,26 @@
 #include "stm32f10x.h"
 #include "bsp_type.h"
 #include "user_val.h"
+
+#define ECG_LEADOFF	PA14
+#define ECG_FR			PA15
+#define ECG_PDN			PB3
+#define ECG_LPSEL		PB4
+
+#define ECG_PWR			PB12
+#define SPO2_PWR		PB13
+#define BMP_PWR			PB14
+#define INT_O				PB15
+#define INT_I				PA8
+#define ECG_LODN_DET	PB8
+#define ECG_LODP_DET	PB9
+#define DOR_DET				PC13
+#define SYS_STATUS	PA3
+#define SPO2_INT		PB0
+#define LOCK_EN			PB1
+#define EEPROM_CS		PA4
+
+
 #define IOC_SET(ID,VAL)	if (VAL)	\
 					GPIO_SetBits(GPIOB,ID);\
 					else		\
@@ -51,4 +71,4 @@ IO_HANDLE	io_handle={
 	.ioset	=IO_Set,
 	.ioget	=IO_Get,
 };
-IO_HANDLE *ioh=&io_handle;
+IO_HANDLE *ioh	=&io_handle;

@@ -22,7 +22,7 @@
 
 //----------------
 #define MAX_CMDS	20
-#define AT_REPLAY	printf
+
 
 extern HBP_HANDLE * hbp;
 char * cmdStrList[MAX_CMDS]={
@@ -116,8 +116,10 @@ void shellCmdService(volatile uint8_t  * pcBuff)
 			AT_REPLAY("%d",tmpval);
 			break;
 		case AT_ECGON:
+			adch->ECGCtrl(true);
 			break;
 		case AT_ECGOFF:
+			adch->ECGCtrl(false);			
 			break;
 		case AT_UPF:
 			break;

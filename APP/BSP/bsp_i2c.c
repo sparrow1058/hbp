@@ -200,5 +200,4 @@ HBP_HANDLE  hbp_handle=
 	.getHR		=getHeartRate,
 	.getBP		=getBloodPressure,
 };
-HBP_HANDLE * hbp= &hbp_handle;
-
+HBP_HANDLE *hbp	=&hbp_handle;

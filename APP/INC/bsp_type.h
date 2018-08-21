@@ -40,7 +40,16 @@ typedef struct IO_HANDLE_STRUCT
 	const pvFunSet ioset;		//set io
 	const pbFunGet ioget;		//get io
 }IO_HANDLE;
+typedef struct ADC_HANDLE_STRUCT
+{
+	const char *const name;
+	bool	status;	// 设备打开状态	
 
+	__IO uint16_t *val1;	//ADC 
+	__IO uint16_t  *val2;
+	const pvFunVoid init;
+	const pvFunBool ECGCtrl;	//控制打开
+}ADC_HANDLE;
 
 
 #endif
