@@ -45,8 +45,9 @@ typedef struct ADC_HANDLE_STRUCT
 	const char *const name;
 	bool	status;	// 设备打开状态	
 
-	__IO uint16_t *val1;	//ADC 
-	__IO uint16_t  *val2;
+	__IO u32 *adcVal;	//ADC 
+	__IO u16 vol0;
+	__IO u16 vol1;
 	const pvFunVoid init;
 	const pvFunBool ECGCtrl;	//控制打开
 }ADC_HANDLE;

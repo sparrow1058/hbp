@@ -144,7 +144,7 @@ void I2C_EE_BufferRead(u8 ReadAddr,u8* pBuffer,  u16 NumByteToRead)
 void gethyVersion()
 {
 	u8 *verStr=(u8 *)hyVersion;
-		printf("hyversion=%s \n",hyVersion);
+//		printf("hyversion=%s \n",hyVersion);
 	I2C_EE_BufferRead(REG_HBP_VER,verStr,8);
 	hyVersion[8]=0;
 
@@ -152,7 +152,7 @@ void gethyVersion()
 	
 void devCtrl(bool cmd)
 {
-	printf("ctrl cmd=%d \n",cmd);
+//	printf("ctrl cmd=%d \n",cmd);
 	gethyVersion();
 /*if(cmd)
 		I2C_EE_ByteWrite(REG_HBP_CTRL,0xA1);

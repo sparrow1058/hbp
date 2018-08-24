@@ -89,7 +89,7 @@ void shellCmdService(volatile uint8_t  * pcBuff)
 //	uint8_t buff[32];
 	ptRxd=(uint8_t *)pcBuff;
 	cmdType=getCmdType(ptRxd);
-	printf("AT CMD =%d \n",cmdType);
+	//printf("AT CMD =%d \n",cmdType);
 	switch(cmdType)
 	{
 		case AT_HVER:
@@ -109,11 +109,11 @@ void shellCmdService(volatile uint8_t  * pcBuff)
 			break;
 		case AT_HR:
 			tmpval=hbp->getHR();
-			AT_REPLAY("%d",tmpval);
+		AT_REPLAY("HR:%d",tmpval);
 			break;
 		case AT_BP:
 			tmpval=hbp->getBP();
-			AT_REPLAY("%d",tmpval);
+		AT_REPLAY("SBP:%d DBP:%d",tmpval&0xFF,tmpval>>8);
 			break;
 		case AT_ECGON:
 			adch->ECGCtrl(true);

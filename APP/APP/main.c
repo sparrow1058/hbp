@@ -28,11 +28,11 @@ int main(void)
     {
 			if(RxFrameState==1)
 			{
-				printf("Receive %d bytes \r\n",RxCounter);
+		//		printf("Receive %d bytes \r\n",RxCounter);
 				aRxBuffer[RxCounter]='\0';
 				if(RxCounter>4)
 				{
-					printf("%s",aRxBuffer);
+			//		printf("%s",aRxBuffer);
 					shellCmdService(aRxBuffer);
 					
 				}
@@ -45,7 +45,10 @@ int main(void)
 				if(adcgap++>10)
 				{
 					adcgap=0;
-					AT_REPLAY("%d %d ",*adch->val1,*adch->val2);
+					adch->vol0=(3300*((*adch->adcVal)&0xFFFF)/0xFFF);
+					adch->vol1=(3300*((*adch->adcVal)>>16)/0xFFF);
+					AT_REPLAY("ECG:%d %d ",adch->vol0,adch->vol1);
+				//	AT_REPLAY("%x",*adch->adcVal);
 				}
 			}
 			Delay(0xfee); 
