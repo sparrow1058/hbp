@@ -52,5 +52,17 @@ typedef struct ADC_HANDLE_STRUCT
 	const pvFunBool ECGCtrl;	//¿ØÖÆ´ò¿ª
 }ADC_HANDLE;
 
+typedef struct REPORT_DATA_STRUCT
+{
+	u8		type;			//report type	0x00:Report All data  0x01: hr&bp	0x02: ecg value
+	u8		hr;				//heart rate state  A0= NO Data   A1: new Data
+	u8		hrVal;			//heart rate value
+	u8		hbp;			//heart blood pressure B0 No Data	B1: new Data
+	u8		sbpVal;			//1byte sbp value
+	u8		dbpVal;			//1byte dbp value
+	u8		ecg;			//ecg state   C0= NO data   C1: new Data
+	u16		ecgVal;			//2 bytes ecg value
+}REPORT_STRUCT;
+
 
 #endif

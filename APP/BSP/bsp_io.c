@@ -53,7 +53,7 @@ void IO_Config(void)
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	GPIO_SetBits(GPIOB, GPIO_Pin_12);	 // turn off all led
-	//GPIO_SetBits(GPIOB, GPIO_Pin_13 );
+	GPIO_SetBits(GPIOB, GPIO_Pin_13 );
 	GPIO_SetBits(GPIOB, GPIO_Pin_14 );
 	GPIO_SetBits(GPIOB, GPIO_Pin_15);
 }

@@ -4,27 +4,8 @@
 #include "bsp_type.h"
 #include "user_val.h"
 #include "string.h"
-
-//THE AT CMD ID 
-#define AT_HVER		0
-#define AT_SVER		1	
-#define AT_HYVER	2
-#define AT_HP_ON	3
-#define AT_HP_OFF	4
-#define AT_HR		5	
-#define AT_BP		6
-#define AT_ECGON	7
-#define AT_ECGOFF	8
-#define AT_UPF		9
-#define AT_PKEY		10
-#define AT_SKEY		11
-
-
-//----------------
-#define MAX_CMDS	20
-
-
-extern HBP_HANDLE * hbp;
+static u8	reportType=0;
+static REPORT_STRUCT page;
 char * cmdStrList[MAX_CMDS]={
 	"AT+HVER",
 	"AT+SVER",
@@ -38,7 +19,11 @@ char * cmdStrList[MAX_CMDS]={
 	"AT+UPF",
 	"AT+PKEY",
 	"AT+SKEY",
+	"AT+START",
+	"AT+STOP",
 };
+
+uint8_t getCmdType(uint8_t * buff);
 bool StrComp(void * buffer,void * StrCmd)
 {
     uint8_t i;
@@ -52,14 +37,14 @@ bool StrComp(void * buffer,void * StrCmd)
         if(ptCmd[i])
         {
             if(ptBuf[i] != ptCmd[i])
-							return false;
+				return false;
         }
         else 
         {
             if(i)
-							return true;
+				return true;
             else 
-							return false;    
+				return false;    
         }
     }
     return false;
@@ -89,6 +74,7 @@ void shellCmdService(volatile uint8_t  * pcBuff)
 //	uint8_t buff[32];
 	ptRxd=(uint8_t *)pcBuff;
 	cmdType=getCmdType(ptRxd);
+	reportType=cmdType;
 	//printf("AT CMD =%d \n",cmdType);
 	switch(cmdType)
 	{
@@ -102,6 +88,7 @@ void shellCmdService(volatile uint8_t  * pcBuff)
 			AT_REPLAY("%s",hbp->hyVersion);
 			break;
 		case AT_HP_ON:
+			page.type=1;
 			hbp->hpCtrl(1);
 			break;
 		case AT_HP_OFF:
@@ -109,16 +96,18 @@ void shellCmdService(volatile uint8_t  * pcBuff)
 			break;
 		case AT_HR:
 			tmpval=hbp->getHR();
-		AT_REPLAY("HR:%d",tmpval);
+			AT_REPLAY("HR:%d",tmpval);
 			break;
 		case AT_BP:
 			tmpval=hbp->getBP();
-		AT_REPLAY("SBP:%d DBP:%d",tmpval&0xFF,tmpval>>8);
+			AT_REPLAY("SBP:%d DBP:%d",tmpval&0xFF,tmpval>>8);
 			break;
 		case AT_ECGON:
+			page.type=2;
 			adch->ECGCtrl(true);
 			break;
 		case AT_ECGOFF:
+			page.type=0xFF;
 			adch->ECGCtrl(false);			
 			break;
 		case AT_UPF:
@@ -127,8 +116,23 @@ void shellCmdService(volatile uint8_t  * pcBuff)
 			break;
 		case AT_SKEY:
 			break;
+		case AT_START:
+			page.type=0;
+			break;
+		case AT_STOP:
+			break;
 		default:
 			break;
 	}
 }
+void report_data()
+{
+	switch (reportType)
+	{
+		case AT_HR:
+		case AT_BP:
+			break;
+		case AT_START:
 
+
+}

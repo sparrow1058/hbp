@@ -40,6 +40,8 @@ int main(void)
 				RxFrameState=0;
      //   if(shell_rx_rdy){Task_ShellRxGuard(NULL);} 
 			}
+			report_data();
+/*
 			if(adch->status)
 			{
 				if(adcgap++>10)
@@ -51,6 +53,7 @@ int main(void)
 				//	AT_REPLAY("%x",*adch->adcVal);
 				}
 			}
+*/
 			Delay(0xfee); 
 		}
 }
